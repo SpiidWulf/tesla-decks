@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
+<title>Tesla Decks</title>
+<meta name="color-scheme" content="dark">
+<style>
+  :root{--u:min(1vw,1.6vh);--accent:#ff3b3b}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%;background:#05060a;color:#f5f7fb;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  body{background:radial-gradient(60vw 60vh at 85% 0%,rgba(255,59,59,.2),transparent 60%),radial-gradient(70vw 70vh at 0% 100%,rgba(77,163,255,.15),transparent 60%),#05060a;min-height:100vh;
+    padding:calc(var(--u)*6) calc(var(--u)*8)}
+  .kicker{font-size:calc(var(--u)*2.4);letter-spacing:.32em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  h1{font-size:calc(var(--u)*8);font-weight:800;letter-spacing:-.03em;margin:calc(var(--u)*1) 0 calc(var(--u)*2)}
+  #status{font-size:calc(var(--u)*3);color:#aab3c5;margin-bottom:calc(var(--u)*4);min-height:1.3em}
+  ul{list-style:none;display:grid;gap:calc(var(--u)*2)}
+  a.deck{display:flex;align-items:center;justify-content:space-between;gap:calc(var(--u)*3);text-decoration:none;color:#fff;
+    padding:calc(var(--u)*3) calc(var(--u)*4);min-height:96px;border-radius:calc(var(--u)*2);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
+  a.deck:active{background:rgba(255,59,59,.35)}
+  a.deck .t{font-size:calc(var(--u)*4.2);font-weight:750}
+  a.deck .d{font-size:calc(var(--u)*2.8);color:#aab3c5;font-variant-numeric:tabular-nums;white-space:nowrap}
+  a.deck.new{border-color:rgba(255,59,59,.6)}
+  a.deck.new .t::after{content:"NEWEST";font-size:calc(var(--u)*1.8);letter-spacing:.2em;color:var(--accent);margin-left:calc(var(--u)*2);vertical-align:middle}
+  noscript a{color:#fff;font-size:calc(var(--u)*4)}
+</style>
+</head>
+<body>
+<div class="kicker">Tesla Decks</div>
+<h1>All decks</h1>
+<p id="status">Opening the newest deck…</p>
+<noscript><p><a href="decks/2026-10-23-welcome.html">Open the Welcome deck</a></p></noscript>
+<ul id="list"><li><a class="deck new" href="decks/2026-10-23-welcome.html"><span class="t">Welcome</span><span class="d">2026-10-23</span></a></li></ul>
+<script>
+(function(){
+  var status=document.getElementById('status'), list=document.getElementById('list');
+  var noRedirect=/[?&]list\b/.test(location.search);
+  function render(decks){
+    list.innerHTML='';
+    decks.forEach(function(d,k){
+      var li=document.createElement('li'), a=document.createElement('a');
+      a.className='deck'+(k===0?' new':''); a.href=d.path;
+      var t=document.createElement('span'); t.className='t'; t.textContent=d.title;
+      var s=document.createElement('span'); s.className='d'; s.textContent=d.date;
+      a.appendChild(t); a.appendChild(s); li.appendChild(a); list.appendChild(li);
+    });
+  }
+  if(!window.fetch){status.textContent='Tap a deck to open it.';return;}
+  fetch('latest.json?t='+Date.now(),{cache:'no-store'})
+    .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
+    .then(function(j){
+      var decks=(j.decks&&j.decks.length)?j.decks.slice():(j.latest?[j.latest]:[]);
+      decks.sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0;});
+      render(decks);
+      var latest=j.latest||decks[0];
+      if(latest&&latest.path&&!noRedirect){
+        status.textContent='Opening “'+latest.title+'”…';
+        location.replace(latest.path+(latest.path.indexOf('?')<0?'?':'&')+'t='+Date.now());
+      } else {status.textContent='Tap a deck to open it.';}
+    })
+    .catch(function(){status.textContent='Could not load the deck list. Tap a deck to open it.';});
+})();
+</script>
+</body>
+</html>
