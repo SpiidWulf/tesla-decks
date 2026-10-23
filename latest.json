@@ -1,6 +1,7 @@
 {
-  "latest": {"title": "Welcome", "path": "decks/2026-10-23-welcome.html", "date": "2026-10-23"},
+  "latest": {"title": "Why Tesla is the superior car", "path": "decks/2026-10-23-why-tesla.html", "date": "2026-10-23"},
   "decks": [
+    {"title": "Why Tesla is the superior car", "path": "decks/2026-10-23-why-tesla.html", "date": "2026-10-23"},
     {"title": "Welcome", "path": "decks/2026-10-23-welcome.html", "date": "2026-10-23"}
   ]
 }
